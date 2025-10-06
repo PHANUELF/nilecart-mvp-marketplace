@@ -31,20 +31,5 @@ export const supabase = createClient<Database>(
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true,
-  }
-});
-
-// Add error logging for auth operations
-supabase.auth.onAuthStateChange((event, session) => {
-  console.log('🔐 Auth state change:', event, session ? 'User logged in' : 'User logged out');
-  if (event === 'SIGNED_IN') {
-    console.log('✅ User signed in successfully');
-  } else if (event === 'SIGNED_OUT') {
-    console.log('❌ User signed out');
-  } else if (event === 'TOKEN_REFRESHED') {
-    console.log('🔄 Token refreshed');
-  } else if (event === 'USER_UPDATED') {
-    console.log('👤 User updated');
   }
 });

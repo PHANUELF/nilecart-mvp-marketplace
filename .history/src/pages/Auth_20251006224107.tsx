@@ -111,20 +111,12 @@ const Auth = () => {
         toast.success('Password reset email sent! Check your inbox.');
         setMode('signin');
       } else {
-        console.log('🔑 Attempting login with:', {
-          email: formData.email,
-          password: '***' // Don't log the actual password
-        });
-
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
-        console.log('🔐 Login response:', { data, error });
-
         if (error) {
-          console.error('❌ Login error:', error);
           if (error.message.includes('Invalid login credentials')) {
             setError('Invalid email or password. Please check your credentials and try again.');
           } else if (error.message.includes('Email not confirmed')) {
@@ -135,7 +127,6 @@ const Auth = () => {
           throw error;
         }
 
-        console.log('✅ Login successful!');
         toast.success('Welcome back!');
         // Navigation will happen automatically via useEffect
       }
