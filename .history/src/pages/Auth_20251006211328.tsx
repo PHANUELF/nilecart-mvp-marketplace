@@ -290,8 +290,7 @@ const Auth = () => {
         </CardContent>
       </Card>
       
-      {/* Debug components - Remove in production */}
-      <SupabaseTest />
+      {/* Debug component - Remove in production */}
       <AuthDebug />
     </div>
   );
