@@ -138,11 +138,9 @@ const Auth = () => {
         if (error) {
           console.error('❌ Login error:', error);
           if (error.message.includes('Invalid login credentials')) {
-            setError('Invalid email or password. If you just signed up, please check your email and click the confirmation link first.');
-          } else if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+            setError('Invalid email or password. Please check your credentials and try again.');
+          } else if (error.message.includes('Email not confirmed')) {
             setError('Please check your email and click the confirmation link before signing in.');
-          } else if (error.message.includes('signup_disabled')) {
-            setError('Account creation is currently disabled. Please contact support.');
           } else {
             setError(error.message);
           }
@@ -319,28 +317,6 @@ const Auth = () => {
       {/* Debug components - Remove in production */}
       <SupabaseTest />
       <AuthDebug />
-      
-      {/* Quick test button */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={async () => {
-            console.log('🧪 Testing auth state...');
-            const { data: { session }, error } = await supabase.auth.getSession();
-            console.log('Current session:', session);
-            console.log('Session error:', error);
-            
-            if (session) {
-              console.log('User is logged in:', session.user);
-            } else {
-              console.log('No active session');
-            }
-          }}
-        >
-          Test Auth State
-        </Button>
-      </div>
     </div>
   );
 };

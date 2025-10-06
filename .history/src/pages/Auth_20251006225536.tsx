@@ -319,28 +319,6 @@ const Auth = () => {
       {/* Debug components - Remove in production */}
       <SupabaseTest />
       <AuthDebug />
-      
-      {/* Quick test button */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={async () => {
-            console.log('🧪 Testing auth state...');
-            const { data: { session }, error } = await supabase.auth.getSession();
-            console.log('Current session:', session);
-            console.log('Session error:', error);
-            
-            if (session) {
-              console.log('User is logged in:', session.user);
-            } else {
-              console.log('No active session');
-            }
-          }}
-        >
-          Test Auth State
-        </Button>
-      </div>
     </div>
   );
 };
