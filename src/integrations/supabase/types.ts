@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       products: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           id: string
@@ -25,6 +26,7 @@ export type Database = {
           seller_id: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -34,6 +36,7 @@ export type Database = {
           seller_id: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -59,6 +62,7 @@ export type Database = {
           id: string
           role: Database["public"]["Enums"]["user_role"]
           user_id: string
+          whatsapp_number: string | null
         }
         Insert: {
           created_at?: string
@@ -66,6 +70,7 @@ export type Database = {
           id?: string
           role: Database["public"]["Enums"]["user_role"]
           user_id: string
+          whatsapp_number?: string | null
         }
         Update: {
           created_at?: string
@@ -73,6 +78,7 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
+          whatsapp_number?: string | null
         }
         Relationships: []
       }

@@ -4,10 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { CATEGORIES } from './CategoryFilter';
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -20,6 +22,7 @@ export const ProductForm = ({ onSuccess }: ProductFormProps) => {
     name: '',
     description: '',
     price: '',
+    category: 'Other',
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -63,6 +66,7 @@ export const ProductForm = ({ onSuccess }: ProductFormProps) => {
           name: formData.name,
           description: formData.description || null,
           price: parseFloat(formData.price),
+          category: formData.category,
           image_url,
           seller_id: user.id,
         });
@@ -70,7 +74,7 @@ export const ProductForm = ({ onSuccess }: ProductFormProps) => {
       if (insertError) throw insertError;
 
       toast.success('Product added successfully!');
-      setFormData({ name: '', description: '', price: '' });
+      setFormData({ name: '', description: '', price: '', category: 'Other' });
       setImageFile(null);
       onSuccess();
     } catch (error: any) {
@@ -118,6 +122,25 @@ export const ProductForm = ({ onSuccess }: ProductFormProps) => {
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               required
             />
+          </div>
+
+          <div>
+            <Label htmlFor="category">Category</Label>
+            <Select 
+              value={formData.category} 
+              onValueChange={(value) => setFormData({ ...formData, category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.filter(cat => cat !== 'All').map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>

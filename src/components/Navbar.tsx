@@ -17,9 +17,10 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <ShoppingBag className="h-6 w-6 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              NileCart
+            <ShoppingBag className="h-6 w-6" style={{ color: '#7f03fc' }} />
+            <span className="text-2xl font-bold">
+              <span style={{ color: '#7f03fc' }}>Nile</span>
+              <span style={{ color: '#000000' }} className="dark:text-white">Cart</span>
             </span>
           </Link>
 

@@ -6,13 +6,18 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { Package } from 'lucide-react';
+import { Package, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Product {
   id: string;
   name: string;
   description: string | null;
   price: number;
+  category: string;
   image_url: string | null;
   seller_id: string;
 }
@@ -21,12 +26,48 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [savingWhatsApp, setSavingWhatsApp] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchProducts();
+      fetchWhatsAppNumber();
     }
   }, [user]);
+
+  const fetchWhatsAppNumber = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('whatsapp_number')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!error && data?.whatsapp_number) {
+      setWhatsappNumber(data.whatsapp_number);
+    }
+  };
+
+  const saveWhatsAppNumber = async () => {
+    if (!user) return;
+
+    setSavingWhatsApp(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ whatsapp_number: whatsappNumber })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      toast.success('WhatsApp number saved!');
+    } catch (error: any) {
+      toast.error('Failed to save WhatsApp number');
+    } finally {
+      setSavingWhatsApp(false);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -75,7 +116,41 @@ const Dashboard = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 mb-8">
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5" />
+                    WhatsApp Settings
+                  </CardTitle>
+                  <CardDescription>
+                    Add your WhatsApp number to receive orders
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="whatsapp">WhatsApp Number</Label>
+                    <Input
+                      id="whatsapp"
+                      type="tel"
+                      placeholder="+1234567890"
+                      value={whatsappNumber}
+                      onChange={(e) => setWhatsappNumber(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Include country code (e.g., +1 for US)
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={saveWhatsAppNumber} 
+                    disabled={savingWhatsApp}
+                    className="w-full"
+                  >
+                    {savingWhatsApp ? 'Saving...' : 'Save WhatsApp Number'}
+                  </Button>
+                </CardContent>
+              </Card>
+              
               <ProductForm onSuccess={fetchProducts} />
             </div>
 
