@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { AuthDebug } from '@/components/AuthDebug';
+import { SupabaseTest } from '@/components/SupabaseTest';
 import { ShoppingBag, AlertCircle } from 'lucide-react';
 
 const Auth = () => {
@@ -30,7 +32,8 @@ const Auth = () => {
 
   // Debug current URL for Supabase configuration
   useEffect(() => {
-    // Removed debug logging for production
+    console.log('🌐 Current URL for Supabase auth:', window.location.origin);
+    console.log('🔗 Full URL:', window.location.href);
   }, []);
 
   useEffect(() => {
@@ -65,6 +68,7 @@ const Auth = () => {
     setError(null);
 
     try {
+      console.log('🔐 Attempting Google sign-in...');
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -72,10 +76,15 @@ const Auth = () => {
         },
       });
 
+      console.log('🔐 Google OAuth response:', { data, error });
+
       if (error) {
+        console.error('❌ Google sign-in error:', error);
         setError(`Google sign-in failed: ${error.message}`);
         throw error;
       }
+
+      console.log('✅ Google sign-in initiated');
     } catch (error: any) {
       console.error('Google authentication error:', error);
       if (!error.message) {
@@ -93,6 +102,12 @@ const Auth = () => {
 
     try {
       if (mode === 'signup') {
+        console.log('🚀 Attempting signup with:', {
+          email: formData.email,
+          role: formData.role,
+          full_name: formData.full_name
+        });
+
         const { data, error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
@@ -105,7 +120,10 @@ const Auth = () => {
           },
         });
 
+        console.log('📧 Signup response:', { data, error });
+
         if (error) {
+          console.error('❌ Signup error:', error);
           if (error.message.includes('already registered')) {
             setError('An account with this email already exists. Please sign in instead.');
           } else if (error.message.includes('password')) {
@@ -118,11 +136,14 @@ const Auth = () => {
 
         // Check if user needs email confirmation
         if (data.user && !data.session) {
+          console.log('📧 User created but needs email confirmation');
           toast.success('Account created! Please check your email to verify your account before signing in.');
           setMode('signin');
         } else if (data.user && data.session) {
+          console.log('✅ User created and signed in immediately');
           toast.success('Account created successfully!');
         } else {
+          console.log('⚠️ Unexpected signup response:', data);
           toast.success('Account created! Please try signing in.');
           setMode('signin');
         }
@@ -140,12 +161,26 @@ const Auth = () => {
         toast.success('Password reset email sent! Check your inbox.');
         setMode('signin');
       } else {
+        console.log('🔑 Attempting login with:', {
+          email: formData.email,
+          password: '***' // Don't log the actual password
+        });
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
+        console.log('🔐 Login response:', { data, error });
+
         if (error) {
+          console.error('❌ Login error details:', {
+            message: error.message,
+            status: error.status,
+            name: error.name,
+            code: error.code
+          });
+          
           if (error.message.includes('Invalid login credentials')) {
             setError('Invalid email or password. Please check your credentials and try again.');
           } else if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
@@ -160,6 +195,7 @@ const Auth = () => {
           throw error;
         }
 
+        console.log('✅ Login successful!');
         toast.success('Welcome back!');
         // Navigation will happen automatically via useEffect
       }
