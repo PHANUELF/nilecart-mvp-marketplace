@@ -60,7 +60,7 @@ export const AdminVerificationDashboard = () => {
             .single();
 
           if (profileError) {
-            // Profile not found - use default values
+            console.error('Profile query error for user:', seller.user_id, profileError);
           }
 
           return {

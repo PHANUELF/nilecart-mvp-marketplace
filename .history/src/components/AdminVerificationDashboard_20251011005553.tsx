@@ -60,7 +60,7 @@ export const AdminVerificationDashboard = () => {
             .single();
 
           if (profileError) {
-            // Profile not found - use default values
+            console.error('Profile query error for user:', seller.user_id, profileError);
           }
 
           return {
@@ -133,6 +133,7 @@ export const AdminVerificationDashboard = () => {
 
       toast.success(`Verification ${status} successfully`);
     } catch (error: any) {
+      console.error('Error updating verification:', error);
       toast.error(`Failed to ${status} verification`);
     } finally {
       setProcessing(null);

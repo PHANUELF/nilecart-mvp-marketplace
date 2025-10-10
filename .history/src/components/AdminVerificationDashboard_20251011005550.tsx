@@ -60,7 +60,7 @@ export const AdminVerificationDashboard = () => {
             .single();
 
           if (profileError) {
-            // Profile not found - use default values
+            console.error('Profile query error for user:', seller.user_id, profileError);
           }
 
           return {
@@ -96,6 +96,7 @@ export const AdminVerificationDashboard = () => {
       if (error) throw error;
       return data.signedUrl;
     } catch (error: any) {
+      console.error('Error getting document URL:', error);
       toast.error('Failed to load document');
       return null;
     }
@@ -133,6 +134,7 @@ export const AdminVerificationDashboard = () => {
 
       toast.success(`Verification ${status} successfully`);
     } catch (error: any) {
+      console.error('Error updating verification:', error);
       toast.error(`Failed to ${status} verification`);
     } finally {
       setProcessing(null);
