@@ -321,6 +321,9 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+        
+        {/* Debug Info - Remove after getting user ID */}
+        <UserDebugInfo />
       </div>
       
       <Footer />

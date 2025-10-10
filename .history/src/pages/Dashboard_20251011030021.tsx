@@ -4,6 +4,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { ProductForm } from '@/components/ProductForm';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SellerVerificationForm } from '@/components/SellerVerificationForm';
+import { UserDebugInfo } from '@/components/UserDebugInfo';
 import { Footer } from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -34,7 +35,7 @@ interface VerificationStatus {
 }
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [whatsappNumber, setWhatsappNumber] = useState('');
@@ -153,15 +154,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success('Signed out successfully');
-    } catch (error: any) {
-      toast.error('Failed to sign out');
-    }
-  };
-
   return (
     <ProtectedRoute allowedRoles={['seller']}>
       <div className="min-h-screen bg-background">
@@ -169,27 +161,17 @@ const Dashboard = () => {
         
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">Seller Dashboard</h1>
+                <h1 className="text-3xl font-bold mb-2">Seller Dashboard</h1>
                 <p className="text-muted-foreground">
                   Manage your products and track your sales
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  <span className="text-sm font-medium">Verification Status:</span>
-                  {getVerificationBadge()}
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={handleSignOut}
-                  className="gap-2 w-full sm:w-auto"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                <span className="text-sm font-medium">Verification Status:</span>
+                {getVerificationBadge()}
               </div>
             </div>
           </div>
@@ -321,6 +303,9 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+        
+        {/* Debug Info - Remove after getting user ID */}
+        <UserDebugInfo />
       </div>
       
       <Footer />

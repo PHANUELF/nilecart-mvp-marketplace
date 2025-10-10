@@ -4,6 +4,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { ProductForm } from '@/components/ProductForm';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SellerVerificationForm } from '@/components/SellerVerificationForm';
+import { UserDebugInfo } from '@/components/UserDebugInfo';
 import { Footer } from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -321,6 +322,9 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+        
+        {/* Debug Info - Remove after getting user ID */}
+        <UserDebugInfo />
       </div>
       
       <Footer />
