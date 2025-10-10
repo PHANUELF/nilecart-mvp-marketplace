@@ -38,7 +38,7 @@ const Profile = () => {
         city: profile.city || '',
         state: profile.state || '',
         postal_code: profile.postal_code || '',
-        country: profile.country || 'South Sudan',
+        country: profile.country || 'Egypt',
       });
     }
   }, [profile, authLoading]);
@@ -83,7 +83,7 @@ const Profile = () => {
       city: profile?.city || '',
       state: profile?.state || '',
       postal_code: profile?.postal_code || '',
-      country: profile?.country || 'South Sudan',
+      country: profile?.country || 'Egypt',
     });
     setIsEditing(false);
   };
