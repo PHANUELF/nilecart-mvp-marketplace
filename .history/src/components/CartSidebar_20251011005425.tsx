@@ -71,11 +71,14 @@ export const CartSidebar = () => {
   };
 
   const handleCheckout = () => {
+    console.log('Checkout clicked. Items:', items.length, 'WhatsApp:', sellerWhatsApp);
+    
     if (items.length === 0) {
       toast.error('Your cart is empty');
       return;
     }
 
+    console.log('Opening checkout dialog');
     setCheckoutOpen(true);
   };
 

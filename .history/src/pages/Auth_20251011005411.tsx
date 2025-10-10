@@ -163,6 +163,7 @@ const Auth = () => {
         // Navigation will happen automatically via useEffect
       }
     } catch (error: any) {
+      console.error('Authentication error:', error);
       if (!error.message) {
         setError('An unexpected error occurred. Please try again.');
       }
