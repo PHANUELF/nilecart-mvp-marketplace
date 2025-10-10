@@ -78,12 +78,6 @@ const Profile = () => {
     setFormData({
       full_name: profile?.full_name || '',
       whatsapp_number: profile?.whatsapp_number || '',
-      address_line1: profile?.address_line1 || '',
-      address_line2: profile?.address_line2 || '',
-      city: profile?.city || '',
-      state: profile?.state || '',
-      postal_code: profile?.postal_code || '',
-      country: profile?.country || 'Egypt',
     });
     setIsEditing(false);
   };
@@ -211,86 +205,6 @@ const Profile = () => {
                 <p className="text-xs text-muted-foreground">
                   This helps sellers contact you directly for orders
                 </p>
-              </div>
-
-              {/* Address Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <Label className="text-base font-medium">Address Information</Label>
-                </div>
-                
-                {/* Address Line 1 */}
-                <div className="space-y-2">
-                  <Label htmlFor="address_line1">Address Line 1</Label>
-                  <Input
-                    id="address_line1"
-                    value={formData.address_line1}
-                    onChange={(e) => setFormData({ ...formData, address_line1: e.target.value })}
-                    disabled={!isEditing}
-                    placeholder="Street address, building number"
-                  />
-                </div>
-
-                {/* Address Line 2 */}
-                <div className="space-y-2">
-                  <Label htmlFor="address_line2">Address Line 2 (Optional)</Label>
-                  <Input
-                    id="address_line2"
-                    value={formData.address_line2}
-                    onChange={(e) => setFormData({ ...formData, address_line2: e.target.value })}
-                    disabled={!isEditing}
-                    placeholder="Apartment, suite, unit, etc."
-                  />
-                </div>
-
-                {/* City and State */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      disabled={!isEditing}
-                      placeholder="Enter city"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State/Governorate</Label>
-                    <Input
-                      id="state"
-                      value={formData.state}
-                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                      disabled={!isEditing}
-                      placeholder="Enter state or governorate"
-                    />
-                  </div>
-                </div>
-
-                {/* Postal Code and Country */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="postal_code">Postal Code</Label>
-                    <Input
-                      id="postal_code"
-                      value={formData.postal_code}
-                      onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
-                      disabled={!isEditing}
-                      placeholder="Enter postal code"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
-                    <Input
-                      id="country"
-                      value={formData.country}
-                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      disabled={!isEditing}
-                      placeholder="Enter country"
-                    />
-                  </div>
-                </div>
               </div>
 
               {/* Role (Read-only) */}
