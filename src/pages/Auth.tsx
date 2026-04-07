@@ -14,7 +14,7 @@ import { ShoppingBag, AlertCircle } from 'lucide-react';
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'signin';
-  
+
   const [mode, setMode] = useState<'signin' | 'signup' | 'forgot-password'>(initialMode);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,14 +28,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();
 
-  // Debug current URL for Supabase configuration
-  useEffect(() => {
-    // Removed debug logging for production
-  }, []);
-
   useEffect(() => {
     if (!authLoading && user) {
-      // If we have a profile, redirect based on role
       if (profile) {
         if (profile.role === 'seller') {
           navigate('/dashboard');
@@ -43,17 +37,13 @@ const Auth = () => {
           navigate('/home');
         }
       } else {
-        // If no profile yet, redirect to home as default
-        // Profile will load in background and redirect if needed
         navigate('/home');
       }
     }
   }, [user, profile, authLoading, navigate]);
 
-  // Separate effect to handle profile-based redirect after initial redirect
   useEffect(() => {
     if (user && profile && profile.role === 'seller') {
-      // If user is on home page but should be on dashboard, redirect
       if (window.location.pathname === '/home') {
         navigate('/dashboard');
       }
@@ -65,7 +55,7 @@ const Auth = () => {
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/`,
@@ -115,7 +105,21 @@ const Auth = () => {
           throw error;
         }
 
-        // Check if user needs email confirmation
+        // Insert user into profiles table
+        if (data.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: data.user.id,
+              full_name: formData.full_name,
+              email: formData.email,
+            });
+
+          if (profileError) {
+            console.error('Profile insert error:', profileError);
+          }
+        }
+
         if (data.user && !data.session) {
           toast.success('Account created! Please check your email to verify your account before signing in.');
           setMode('signin');
@@ -125,7 +129,6 @@ const Auth = () => {
           toast.success('Account created! Please try signing in.');
           setMode('signin');
         }
-        // The redirect will happen automatically via the auth state change
       } else if (mode === 'forgot-password') {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
           redirectTo: `${window.location.origin}/auth?mode=signin`,
@@ -139,7 +142,7 @@ const Auth = () => {
         toast.success('Password reset email sent! Check your inbox.');
         setMode('signin');
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
@@ -147,7 +150,10 @@ const Auth = () => {
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
             setError('Invalid email or password. Please check your credentials and try again.');
-          } else if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          } else if (
+            error.message.includes('Email not confirmed') ||
+            error.message.includes('email_not_confirmed')
+          ) {
             setError('Please check your email and click the confirmation link before signing in.');
           } else if (error.message.includes('signup_disabled')) {
             setError('Account creation is currently disabled. Please contact support.');
@@ -160,7 +166,6 @@ const Auth = () => {
         }
 
         toast.success('Welcome back!');
-        // Navigation will happen automatically via useEffect
       }
     } catch (error: any) {
       if (!error.message) {
@@ -179,7 +184,11 @@ const Auth = () => {
             <ShoppingBag className="h-12 w-12" style={{ color: '#fc086a' }} />
           </div>
           <CardTitle className="text-2xl">
-            {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
+            {mode === 'signin'
+              ? 'Welcome Back'
+              : mode === 'signup'
+              ? 'Create Account'
+              : 'Reset Password'}
           </CardTitle>
           <CardDescription>
             {mode === 'signin'
@@ -197,7 +206,7 @@ const Auth = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
               <>
@@ -263,17 +272,15 @@ const Auth = () => {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading 
-                ? 'Please wait...' 
-                : mode === 'signin' 
-                ? 'Sign In' 
-                : mode === 'signup' 
-                ? 'Create Account' 
-                : 'Send Reset Email'
-              }
+              {loading
+                ? 'Please wait...'
+                : mode === 'signin'
+                ? 'Sign In'
+                : mode === 'signup'
+                ? 'Create Account'
+                : 'Send Reset Email'}
             </Button>
 
-            {/* Google Sign-in Button */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -363,7 +370,6 @@ const Auth = () => {
           </form>
         </CardContent>
       </Card>
-      
     </div>
   );
 };

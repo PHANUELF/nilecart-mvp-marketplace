@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import AllUsers from "./pages/AllUsers";
 
 const queryClient = new QueryClient();
 
@@ -28,27 +29,40 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/home" element={
-                <ProtectedRoute allowedRoles={['buyer', 'seller', 'admin']}>
-                  <Home />
-                </ProtectedRoute>
-              } />
-              <Route path="/product/:id" element={
-                <ProtectedRoute allowedRoles={['buyer', 'seller', 'admin']}>
-                  <ProductDetail />
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute allowedRoles={['seller']}>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
+                    <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/product/:id"
+                element={
+                  <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
+                    <ProductDetail />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["seller"]}>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/profile" element={
-                <ProtectedRoute allowedRoles={['buyer', 'seller', 'admin']}>
-                  <Profile />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute allowedRoles={["buyer", "seller", "admin"]}>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/all-users" element={<AllUsers />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>
